@@ -3,65 +3,18 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local serverScriptService = game:GetService("ServerScriptService")
 local rs = game:GetService("ReplicatedStorage")
-local soundSerice = game:GetService("SoundService")
 --//modules
-local profileStore = require(script.ProfileStore)
+local DataInitilizer = require(script.DataInitializer)
+local DataManager = require(script.DataManager)
 local TeamSelect = require(rs.Shared.TeamSelect)
 local VentHandler = require(rs.Shared.VentHandler)
 local SearchableHandler = require(rs.Shared.SearchableHandler)
 local PlayerHandler = require(rs.Shared.PlayerHandler)
 local KeyreaderHandler = require(rs.Shared.KeyreaderHandler)
 local ragdollHandler = require(rs.Shared.RagdollHandler)
-local ToolHandler = require(rs.Shared.ToolHandler)
---/ 
-
-local function GetStoreName()
-	return "GAME_DATABASE"
-end
-
-local Template = require(script.Template)
-local DataManager = require(script.DataManager)
---access profileStore
-local PlayerStore = profileStore.New(GetStoreName(),Template)
--- add leaderstats and sync playerdata
-local function initialize(plr : Player,profile: typeof(PlayerStore:StartSessionAsync()))
-	warn("init...")
-end
-
-local function playerInit(plr: Player)
-	local profile = PlayerStore:StartSessionAsync("Player_" .. plr.UserId, {
-		Cancel = function()
-
-			return plr.Parent ~= Players
-		end,
-	})
-	
-	-- Get Proflile Singleton --
-	if profile ~= nil then
-		profile:AddUserId(plr.UserId)
-		profile:Reconcile()
-
-		--handles session locking --
-		profile.OnSessionEnd:Connect(function()
-			DataManager.Profiles[plr] = nil
-			print("session end")
-			plr:Kick("Data err occured, session ended")
-		end)
-
-		if plr.Parent == Players then
-			DataManager.Profiles[plr] = profile
-		else
-			profile:EndSession()
-		end
-
-	else
-		plr:Kick("Data error occured")
-	end
-end
 
 
-
-local function onCharcterAdded(plr,profile)
+local function onCharcterAdded(plr,profile) --/ profile may be used for 
 	warn("----------------- CHAR ADDED-----------------------")
 	
 	--MISC
@@ -84,7 +37,8 @@ end
 
 local function onPlayerAdded(plr)
 	--warn("plr added")
-	playerInit(plr)
+	--// init playerdata
+	DataInitilizer.playerInit(plr)
 	local profile = DataManager.Profiles[plr]
 	warn("----------------- PLAYER ADDED -----------------------")
 	-- STIM LOCAL DATA (just stimulates local & server data,UI and items immediately show ) --
@@ -127,7 +81,7 @@ end)
 
 
 for _, plr in Players:GetPlayers() do
-	task.spawn(playerInit,plr)
+	task.spawn(DataInitilizer.playerInit,plr) -- why task.spawn?, i know its for immediate run
 end
 
 --
@@ -139,12 +93,12 @@ Players.PlayerRemoving:Connect(function(plr)
 	DataManager.Profiles[plr] = nil
 end)
 
---/for every current Rig
+--/for every current Rig 
 task.wait(3)
 for _,Decendant in pairs(game.Workspace:GetDescendants()) do
 
 	if Decendant:IsA("Model") and Decendant:FindFirstChildWhichIsA("Humanoid") then
-		warn("GOT A RIG TO SET:" .. tostring(Decendant))
+		--setup all current rigs with ragdollHandler
 		ragdollHandler.Set(Decendant)
 	end
 end
