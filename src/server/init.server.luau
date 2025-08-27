@@ -14,7 +14,7 @@ local KeyreaderHandler = require(rs.Shared.KeyreaderHandler)
 local ragdollHandler = require(rs.Shared.RagdollHandler)
 
 
-local function onCharcterAdded(plr,profile) --/ profile may be used for 
+local function onCharacterAdded(plr) --/ profile may be used for 
 	warn("----------------- CHAR ADDED-----------------------")
 	
 	--MISC
@@ -35,6 +35,11 @@ local function onCharcterAdded(plr,profile) --/ profile may be used for
 
 end
 
+local function onCharacterRemoved(plr)
+	if not plr or not plr.Character then return end
+	warn("CHARACTER REMOVED: " .. plr.Character)
+end
+
 local function onPlayerAdded(plr)
 	--warn("plr added")
 	--// init playerdata
@@ -48,57 +53,68 @@ local function onPlayerAdded(plr)
 	PlayerHandler.MovementHandler(plr)
 	-- if statement below, is so that the code still runs, EVEN IF the charcter is added BEFORE the event that runs the code is added :)
 	if plr.Character then
-		onCharcterAdded(plr,profile)
+		onCharacterAdded(plr)
 	end
 	-------------
 	
 	-- connect characterAdded event
 	plr.CharacterAdded:Connect(function()
-		onCharcterAdded(plr,profile)
+		onCharacterAdded(plr)
 	end)
 	
 	plr.CharacterRemoving:Connect(function()
-		warn("CHARCTER REMOVED")
+		onCharacterRemoved(plr)
 	end)
 	--
 
 end
+local function onPlayerRemoved(plr)
+		warn("REMOVING:" .. plr.DisplayName)
+		local profile = DataManager.Profiles[plr]
+		if not profile then	return end
+		profile:EndSession()
+		DataManager.Profiles[plr] = nil
+end
+
 --//OnServerStart
 
-VentHandler.setup()
-SearchableHandler.ServInit()
-KeyreaderHandler.ServInit()
+
+
+local function initialize()
+	--//SERVER INITIALIZER
+	VentHandler.setup()
+	SearchableHandler.ServInit()
+	KeyreaderHandler.ServInit()
 
 
 
 
---// EVENTS
-Players.PlayerAdded:Connect(function(plr)
-	onPlayerAdded(plr)
-end)
+	--//PLAYER INITIALIZER
+	for _, plr in Players:GetPlayers() do
+		--task.spawn(DataInitilizer.playerInit,plr) -- i don't think i need this? not sure
+		onPlayerAdded(plr)
+	end
+	Players.PlayerAdded:Connect(function(plr)
+		onPlayerAdded(plr)
+		plr.CharacterAdded:Connect(function()
+			onCharacterAdded(plr)
+		end)
+	end)
+	Players.PlayerRemoving:Connect(function(plr)
+		onPlayerRemoved(plr)
+	end)
 
 
+	task.wait(3)
 
+	for _,Decendant in pairs(game.Workspace:GetDescendants()) do
 
-for _, plr in Players:GetPlayers() do
-	task.spawn(DataInitilizer.playerInit,plr) -- why task.spawn?, i know its for immediate run
-end
-
---
-Players.PlayerRemoving:Connect(function(plr)
-	warn("REMOVING:" .. plr.DisplayName)
-	local profile = DataManager.Profiles[plr]
-	if not profile then	return end
-	profile:EndSession()
-	DataManager.Profiles[plr] = nil
-end)
-
---/for every current Rig 
-task.wait(3)
-for _,Decendant in pairs(game.Workspace:GetDescendants()) do
-
-	if Decendant:IsA("Model") and Decendant:FindFirstChildWhichIsA("Humanoid") then
-		--setup all current rigs with ragdollHandler
-		ragdollHandler.Set(Decendant)
+		--/for every current Rig 
+		if Decendant:IsA("Model") and Decendant:FindFirstChildWhichIsA("Humanoid") then
+			--setup all current rigs with ragdollHandler
+			ragdollHandler.Set(Decendant)
+		end
 	end
 end
+
+initialize()
