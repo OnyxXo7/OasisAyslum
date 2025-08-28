@@ -4,7 +4,7 @@ local RunService = game:GetService("RunService")
 local serverScriptService = game:GetService("ServerScriptService")
 local rs = game:GetService("ReplicatedStorage")
 --//modules
-local DataInitilizer = require(script.DataInitializer)
+local DataInitializer = require(script.DataInitializer)
 local DataManager = require(script.DataManager)
 local TeamSelect = require(rs.Shared.TeamSelect)
 local VentHandler = require(rs.Shared.VentHandler)
@@ -43,7 +43,9 @@ end
 local function onPlayerAdded(plr)
 	--warn("plr added")
 	--// init playerdata
-	DataInitilizer.playerInit(plr)
+	if not plr then return end
+	warn(DataInitializer.PlayerInit)
+	DataInitializer.PlayerInit(plr)
 	local profile = DataManager.Profiles[plr]
 	warn("----------------- PLAYER ADDED -----------------------")
 	-- STIM LOCAL DATA (just stimulates local & server data,UI and items immediately show ) --
@@ -91,7 +93,7 @@ local function initialize()
 
 	--//PLAYER INITIALIZER
 	for _, plr in Players:GetPlayers() do
-		--task.spawn(DataInitilizer.playerInit,plr) -- i don't think i need this? not sure
+		--task.spawn(DataInitilizer.PlayerInit,plr) -- i don't think i need this? not sure
 		onPlayerAdded(plr)
 	end
 	Players.PlayerAdded:Connect(function(plr)

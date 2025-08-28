@@ -1,4 +1,4 @@
-local DataInitilizer = {}
+local DataInitializer = {}
 
 local ProfileStore = require(script.Parent.ProfileStore)
 local DataManager = require(script.Parent.DataManager)
@@ -8,7 +8,7 @@ local Players = game:GetService("Players")
 --access profileStores
 local PlayerStores = ProfileStore.New("GAME_DATABASE",Template)
 
-function PlayerInit(plr : Player)
+function DataInitializer.PlayerInit(plr : Player)
 
 --/is type of important?
 
@@ -47,4 +47,4 @@ end
 	end
 end
 
-return DataInitilizer
+return DataInitializer

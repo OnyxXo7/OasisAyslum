@@ -10,7 +10,7 @@ local InputHandler = require(rs.ClientLibs.InputHandler)
 -- only interfaces that allow \ REQUESTING \ and events that \ await DISPLAY \ are here
 
 --Player Join
-InputHandler.Localinit()
+
 --
 
 local function onCharcterAdded()
@@ -24,9 +24,20 @@ local function onCharcterAdded()
 
 end
 
-if plr.Character then
-	onCharcterAdded()
+
+local function LocalInitialize()
+	InputHandler.Localinit()
+
+	--/on charcter added local
+	if plr.Character then
+		onCharcterAdded()
+	end
+	plr.CharacterAdded:Connect(function()
+		onCharcterAdded()
+	end)
 end
-plr.CharacterAdded:Connect(function()
-	onCharcterAdded()
-end)
+
+
+
+
+LocalInitialize()
