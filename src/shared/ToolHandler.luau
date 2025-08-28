@@ -2,6 +2,7 @@ local ToolHandler = {}
 local rs = game:GetService("ReplicatedStorage")
 local collectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
+local TextService = game:GetService("TextService")
 local PlayerHandler = require(rs.Shared.PlayerHandler)
 local ZoneService = require(rs.SharedLibs.Zone)
 
@@ -574,14 +575,52 @@ local ToolLogic = {
 		
 		
 	end,
-	["Gun"] = function(Tool: Tool)
+	["Medkit"] = function(Tool: Tool)
+		local ActionTable = {
+			["UseKEY"] = function(State)
+				if not Tool:GetAttribute("Equipped") then return end
+				local owner = Tool.owner.Value
+				local medkitUse = PlayerHandler.getTrack(owner,"MedkitUse")
+				local medkitIdle = PlayerHandler.getTrack(owner,"MedkitIdle")
+				if State then
+					medkitIdle:Stop()
+					medkitUse:Play()
+					task.wait(medkitUse.Length)
+					medkitIdle:Play()
+				else
 
+				end
+				
+			end
+
+		}
+		TrackOwner(Tool,ActionTable)
 		
+		Tool.Equipped:Connect(function()
+			Tool:SetAttribute("Equipped",true)
+			local owner = Tool.owner.Value 
+			local medkitIdle = PlayerHandler.getTrack(owner,"MedkitIdle")
+			if owner then
+				medkitIdle:Play()
+			end
+		end)
+
+		Tool.Unequipped:Connect(function()
+			Tool:SetAttribute("Equipped",false)
+			local owner = Tool.owner.Value
+			local medkitIdle = PlayerHandler.getTrack(owner,"MedkitIdle")
+			local medkitUse = PlayerHandler.getTrack(owner,"MedkitUse")
+			if owner then
+				medkitIdle:Stop()
+				medkitUse:Stop()
+			end
+		end)
 	end
 	
 }
 
 function ToolHandler.addLogic(Tool : Tool) -- IF I ADD MORE TAGS this a problem
+	
 	local toolTag = Tool:GetTags()[1]
 	ToolLogic[toolTag](Tool)
 end

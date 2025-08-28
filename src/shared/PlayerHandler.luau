@@ -87,6 +87,18 @@ local AnimIds = {
 		ID = "136746765385103",
 		Speed = 1,
 		Priority = Enum.AnimationPriority.Action
+	},
+	["MedkitUse"] = {
+		ID = "132119132045025",
+		Speed = 1,
+		Priority = Enum.AnimationPriority.Action3
+
+	},
+	["MedkitIdle"] = {
+		ID = "135705936874229",
+		Speed = 1,
+		Priority = Enum.AnimationPriority.Idle
+
 	}
 	
 	

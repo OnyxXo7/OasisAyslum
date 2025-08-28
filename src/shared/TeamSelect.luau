@@ -56,19 +56,27 @@ local TeamClothes = {
 				
 			elseif teamRq == "Patient" then
 				local Knife : Tool = nil
+				local Medkit : Tool = nil
 				for _,tool in pairs(Tools) do
 				
-					if tool:IsA("Tool") and tool:HasTag("Knife") then
+					if tool:IsA("Tool") then
+						
+						if tool:HasTag("Knife") then
 						
 						ToolHandler.addLogic(tool)
 						Knife = tool
+						end
+						if tool:HasTag("Medkit") then
+						
+						ToolHandler.addLogic(tool)
+						Medkit = tool
+						end
 					end
 				end
-				if Knife then
-					warn("got the knife")
+				if Knife and Medkit then
+					warn("got the knife and medkit")
 					Knife.Parent = plr.Backpack
-				else
-					warn("failed to find Knife")
+					Medkit.Parent = plr.Backpack
 				end
 			end
 
