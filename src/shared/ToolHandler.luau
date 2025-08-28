@@ -615,6 +615,60 @@ local ToolLogic = {
 				medkitUse:Stop()
 			end
 		end)
+	end,
+	["BloxyCola"] = function(Tool: Tool)
+		local ActionTable = {
+			["UseKEY"] = function(State)
+				if not Tool:GetAttribute("Equipped") then return end
+				local owner = Tool.owner.Value
+				local BloxyColaUse = PlayerHandler.getTrack(owner,"BloxyColaUse")
+				local BloxyColaIdle = PlayerHandler.getTrack(owner,"BloxyColaIdle")
+				if State then
+					BloxyColaIdle:stop()
+					BloxyColaUse:Play()
+					task.wait(BloxyColaUse.Length)
+					BloxyColaIdle:Play()
+				end
+			end
+
+		}
+		TrackOwner(Tool,ActionTable)
+		
+		Tool.Equipped:Connect(function()
+			Tool:SetAttribute("Equipped",true)
+			local owner = Tool.owner.Value 
+			local BloxyColaEquip1 = PlayerHandler.getTrack(owner,"BloxyColaEquip1")
+			local BloxyColaEquip2 = PlayerHandler.getTrack(owner,"BloxyColaEquip2")
+			local BloxyColaIdle = PlayerHandler.getTrack(owner,"BloxyColaIdle")
+			if owner then
+				if not Tool:GetAttribute("SodaOpened") then
+					Tool:SetAttribute("SodaOpened",true)
+					BloxyColaEquip1:Play()
+					task.wait(BloxyColaEquip1.Length)
+					BloxyColaIdle:Play()
+				else
+					BloxyColaEquip2:Play()
+					task.wait(BloxyColaEquip2.Length)
+					BloxyColaIdle:Play()
+				end
+				
+			end
+		end)
+
+		Tool.Unequipped:Connect(function()
+			Tool:SetAttribute("Equipped",false)
+			local owner = Tool.owner.Value
+			local BloxyColaUse = PlayerHandler.getTrack(owner,"BloxyColaUse")
+			local BloxyColaEquip1 = PlayerHandler.getTrack(owner,"BloxyColaEquip1")
+			local BloxyColaEquip2 = PlayerHandler.getTrack(owner,"BloxyColaEquip2")
+			local BloxyColaIdle = PlayerHandler.getTrack(owner,"BloxyColaIdle")
+			if owner then
+				BloxyColaIdle:Stop()
+				BloxyColaUse:Stop()
+				BloxyColaEquip1:Stop()
+				BloxyColaEquip2:Stop()
+			end
+		end)
 	end
 	
 }

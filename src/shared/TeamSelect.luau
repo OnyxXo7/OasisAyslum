@@ -57,6 +57,7 @@ local TeamClothes = {
 			elseif teamRq == "Patient" then
 				local Knife : Tool = nil
 				local Medkit : Tool = nil
+				local BloxyCola : Tool = nil
 				for _,tool in pairs(Tools) do
 				
 					if tool:IsA("Tool") then
@@ -71,12 +72,19 @@ local TeamClothes = {
 						ToolHandler.addLogic(tool)
 						Medkit = tool
 						end
+						if tool:HasTag("BloxyCola") then
+						
+						ToolHandler.addLogic(tool)
+						BloxyCola = tool
+						end
+
 					end
 				end
-				if Knife and Medkit then
+				if Knife and Medkit and BloxyCola then
 					warn("got the knife and medkit")
 					Knife.Parent = plr.Backpack
 					Medkit.Parent = plr.Backpack
+					BloxyCola.Parent = plr.Backpack
 				end
 			end
 

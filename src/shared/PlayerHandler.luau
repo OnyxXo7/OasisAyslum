@@ -99,7 +99,34 @@ local AnimIds = {
 		Speed = 1,
 		Priority = Enum.AnimationPriority.Idle
 
-	}
+	},
+	["BloxyColaUse"] = {
+		ID = "121300797785303",
+		Speed = 1,
+		Priority = Enum.AnimationPriority.Action
+
+	},
+	["BloxyColaEquip1"] = {
+		ID = "124021759635818",
+		Speed = 1,
+		Priority = Enum.AnimationPriority.Action
+
+	},
+
+	["BloxyColaEquip2"] = {
+		ID = "104872245851097",
+		Speed = 1,
+		Priority = Enum.AnimationPriority.Action
+
+	},
+	["BloxyColaIdle"] = {
+		ID = "82470501905022",
+		Speed = 1,
+		Priority = Enum.AnimationPriority.Action
+
+	},
+
+
 	
 	
 }
