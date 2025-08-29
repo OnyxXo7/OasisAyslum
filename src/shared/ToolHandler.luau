@@ -486,21 +486,26 @@ local ToolLogic = {
 					local CLONEprojectile : Part =  projectile:Clone()
 					CLONEprojectile.Parent = game.Workspace
 					TazeBeam.Attachment1 = CLONEprojectile.Att
-					
-					task.wait(0.05) --wait for clone and teleport
-					CLONEprojectile.CFrame = DefaultBarrelCFrame.WorldCFrame
+					CLONEprojectile.Anchored = true--
+					CLONEprojectile.CFrame = DefaultBarrelCFrame.WorldCFrame + CLONEprojectile.CFrame.LookVector
+
+					task.wait(0.07) --wait for clone and teleport
+					CLONEprojectile.Anchored = false
 					CLONEprojectile:ApplyImpulse(CLONEprojectile.CFrame.LookVector * speed)
+					warn("FIRE PROJECTILE:" .. tostring(CLONEprojectile.CFrame.LookVector))
 					CLONEprojectile.Touched:Connect(function(touched)
 						warn("`".. touched.Name)
 						if touched.Parent:IsA("Model") and touched.Parent:FindFirstChildOfClass("Humanoid") then
 							warn("`HIT A RIG:" .. tostring(touched.Parent))
 							if touched.Parent == owner.Character then return end
 							RagdollHandler.Ragdoll(touched.Parent)
-							CLONEprojectile.Anchored = true
+							
 							task.wait(0.2)
+							CLONEprojectile.Anchored = false
 							TazeSFX:Play()
 							task.wait(1.5)
 							TazeSFX:Stop()
+							
 						end
 					end)
 					warn("Speed: " .. speed)
@@ -546,8 +551,10 @@ local ToolLogic = {
 				local TazerIdle : AnimationTrack = PlayerHandler.getTrack(owner,"TazerIdle")
 				TazerEquip:Play()
 				task.wait(TazerEquip.Length)
-				TazerIdle:Play()
-				--idleanim
+				if Tool:getAttribute("Equipped") then
+					TazerIdle:Play()
+				end
+				--idleanim--
 			end
 		end)
 
