@@ -9,7 +9,7 @@ local ZoneService = require(rs.SharedLibs.Zone)
 local MeleeHandler = require(rs.Shared.MeleeHandler)
 
 local RagdollHandler = require(rs.Shared.RagdollHandler)
-local inputEv = rs.ClientLibs.InputHandler.InputEv
+local inputEv = rs.updServer.InputEv
 function ToolHandler.initChar(plr : Player)
 	local ToolLockFolder = Instance.new("Folder")
 	ToolLockFolder.Name = "ToolLockFolder"

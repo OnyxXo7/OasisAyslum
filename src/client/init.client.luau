@@ -3,7 +3,7 @@ local Players = game:GetService("Players")
 local plr = Players.LocalPlayer
 local libs = rs:WaitForChild("Shared")
 local TeamSelect = require(libs.TeamSelect)
-local InputHandler = require(rs.ClientLibs.InputHandler)
+local InputHandler = require(rs.Shared.InputHandler)
 
 --this script handles the local logic
 --anything that are comepletely local are here [local interfaces, UI, events awiting server confirm]

@@ -132,7 +132,7 @@ local AnimIds = {
 }
 local allTracks = {}
 local rs = game:GetService("ReplicatedStorage")
-local InputEv = rs.ClientLibs.InputHandler.InputEv
+local InputEv = rs.updServer.InputEv
 warn("PlayerHandler")
 
 function PlayerHandler.MovementTracker(plr:Player) --< On Plr added, (bec things should only be created once ever)
